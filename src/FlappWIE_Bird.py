@@ -140,10 +140,8 @@ def get_player_name():
                 else:
                     name += event.unicode
 
-        # Desenhar a imagem de fundo
         screen.blit(background, (0, 0))
         
-        # Renderizar o texto na cor branca
         name_text = font.render('Enter your name:', True, (purple))
         screen.blit(name_text, (screen_width // 2 - name_text.get_width() // 2, 200))
         
@@ -157,7 +155,6 @@ def get_player_name():
 def game_loop(player_name):
     global bird_y, score, pipe_velocity, pipe_distance, pipes
     
-    # Reset game state
     bird_y = 300
     score = 0
     pipe_velocity = 5
@@ -170,7 +167,6 @@ def game_loop(player_name):
     run = True
     frame_count = 0
     
-    # Base distance
     base_pipe_distance = 300
 
     while run:
