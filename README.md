@@ -12,10 +12,11 @@ FlappWIE Bird was made to be presented by IEEE WIE UNESP Bauru at an university 
 
 ## Usage
 
-1. Run the `FlappWIE_Bird.py` script:
-    python FlappWIE_Bird.py
+1. Run the `FlappWIE_Bird.py` script found in the src folder
 2. Ensure your webcam is connected, as it will be used for hand tracking.
 3. A window will open displaying the game.
+4. Press Play and write your name
+5. Press Enter when you're ready to play
 
 ## How to Play
 
@@ -25,5 +26,6 @@ FlappWIE Bird was made to be presented by IEEE WIE UNESP Bauru at an university 
 
 ## OBS
 
-1. You can change pipe colors and the bird PNG to personalize the game for yourself!
-2. You can also change the game velocity to make it easier or harder to get a higher score!
+1. In the code you can change letter and pipe colors and the game velocity to make it easier or harder to get a higher score!
+2. In the data folder you can change the background and/or bird png to personalize the game for yourself!
+3. Also in the data folder you can change the font file, so you can also change that.

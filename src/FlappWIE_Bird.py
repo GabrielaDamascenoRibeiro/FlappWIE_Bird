@@ -24,18 +24,20 @@ class HandTracker:
 
 pygame.init()
 
+#SETTINGS
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Flappy Bird")
+pygame.display.set_caption('Flappy Bird')
 
 white = (255, 255, 255)
 black = (0, 0, 0)
 green = (0, 255, 0)
 purple = (128, 0, 128)
+red = (151, 0, 46)
 
 #BIRD
-bird_image = pygame.image.load("bird.png")
+bird_image = pygame.image.load('data\\bird.png')
 bird_image = pygame.transform.scale(bird_image, (50, 50))
 
 bird_x = 100
@@ -86,14 +88,81 @@ def update_score(bird_rect, pipes):
         if pipe['top'].right < bird_rect.left and not pipe['scored']:
             score += 1
             pipe['scored'] = True
-            print(f"Score: {score}")
+            print(f'Score: {score}')
             #PIPE VELOCITY ADJUSTMENT
             if score % 2 == 0:
                 pipe_velocity += 1
 
-#MAIN FUNC
-def game_loop():
-    global bird_y, score, pipe_velocity, pipe_distance
+class Menu:
+    def __init__(self):
+        pygame.font.init()
+        self.font = pygame.font.Font('data\\Montserrat-Bold.ttf', 40)
+        self.high_scores = []
+        self.background = pygame.image.load('data\\background.png')
+
+    def draw(self, screen):
+        screen.blit(self.background, (0, 0))
+
+        play_text = self.font.render('Play', True, (purple))
+        screen.blit(play_text, (screen.get_width() // 2 - play_text.get_width() // 2, 200))
+
+        high_score_text = self.font.render('High Scores:', True, (purple))
+        screen.blit(high_score_text, (screen.get_width() // 2 - high_score_text.get_width() // 2, 300))
+
+        for i, (name, score) in enumerate(self.high_scores):
+            score_text = self.font.render(f"{i+1}. {name}: {score}", True, (red))
+            screen.blit(score_text, (screen.get_width() // 2 - score_text.get_width() // 2, 350 + i * 40))
+
+    def update_high_scores(self, name, score):
+        self.high_scores.append((name, score))
+        self.high_scores.sort(key=lambda x: x[1], reverse=True)
+        self.high_scores = self.high_scores[:5]
+
+def get_player_name():
+    pygame.font.init()
+    
+    font = pygame.font.Font('data\\Montserrat-Bold.ttf', 40)
+    
+    name = ""
+    input_active = True
+
+    background = pygame.image.load('data\\background.png')
+
+    while input_active:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return None
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    input_active = False
+                elif event.key == pygame.K_BACKSPACE:
+                    name = name[:-1]
+                else:
+                    name += event.unicode
+
+        # Desenhar a imagem de fundo
+        screen.blit(background, (0, 0))
+        
+        # Renderizar o texto na cor branca
+        name_text = font.render('Enter your name:', True, (purple))
+        screen.blit(name_text, (screen_width // 2 - name_text.get_width() // 2, 200))
+        
+        input_text = font.render(name, True, (purple))
+        screen.blit(input_text, (screen_width // 2 - input_text.get_width() // 2, 300))
+        
+        pygame.display.flip()
+
+    return name
+
+def game_loop(player_name):
+    global bird_y, score, pipe_velocity, pipe_distance, pipes
+    
+    # Reset game state
+    bird_y = 300
+    score = 0
+    pipe_velocity = 5
+    pipe_distance = 300
+    pipes = []
     
     hand_tracker = HandTracker()
     cap = cv2.VideoCapture(0)
@@ -101,7 +170,7 @@ def game_loop():
     run = True
     frame_count = 0
     
-    #BASE DIST
+    # Base distance
     base_pipe_distance = 300
 
     while run:
@@ -137,7 +206,7 @@ def game_loop():
         draw_bird(bird_x, bird_y)
         draw_pipes(pipes)
         
-        score_text = pygame.font.SysFont(None, 55).render(f"Score: {score}", True, black)
+        score_text = pygame.font.SysFont(None, 55).render(f'Score: {score}', True, black)
         screen.blit(score_text, (10, 10))
         
         pygame.display.update()
@@ -145,7 +214,29 @@ def game_loop():
         frame_count += 1
     
     cap.release()
+    return score
+
+def main():
+    menu = Menu()
+    running = True
+
+    while running:
+        menu.draw(screen)
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if 200 < mouse_pos[1] < 250:  # Click on "Play"
+                    player_name = get_player_name()
+                    if player_name:
+                        score = game_loop(player_name)
+                        menu.update_high_scores(player_name, score)
+
     pygame.quit()
     cv2.destroyAllWindows()
 
-game_loop()
+if __name__ == '__main__':
+    main()
