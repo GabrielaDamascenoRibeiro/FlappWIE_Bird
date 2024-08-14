@@ -96,7 +96,7 @@ def update_score(bird_rect, pipes):
 class Menu:
     def __init__(self):
         pygame.font.init()
-        self.font = pygame.font.Font('data\\Montserrat-Bold.ttf', 40)
+        self.font = pygame.font.Font('data\\DePixelBreit.ttf', 40)
         self.high_scores = []
         self.background = pygame.image.load('data\\background.png')
 
@@ -121,7 +121,7 @@ class Menu:
 def get_player_name():
     pygame.font.init()
     
-    font = pygame.font.Font('data\\Montserrat-Bold.ttf', 40)
+    font = pygame.font.Font('data\\DePixelBreit.ttf', 40)
     
     name = ""
     input_active = True
